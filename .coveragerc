@@ -1,0 +1,11 @@
+[run]
+branch = True
+
+[report]
+omit = 
+  jaeger_client/thrift_gen/*
+  jaeger_client/thrift_gen/*/*
+  crossdock/thrift_gen/*
+
+[xml]
+output = coverage.xml
