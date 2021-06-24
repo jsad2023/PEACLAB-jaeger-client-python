@@ -167,7 +167,8 @@ class Tracer(opentracing.Tracer):
                 and not parent:
             parent = self.active_span
         
-        # To propagate disabling
+        # If the root tracepoint has been disabled, the the child
+        # spans will be disabled as well
         if isinstance(parent, NullSpan):
             return Tracer.nullSpan
 
