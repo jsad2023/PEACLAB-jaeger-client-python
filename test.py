@@ -22,15 +22,15 @@ if __name__ == "__main__":
     tracer = config.initialize_tracer()
 
     with tracer.start_span('ROOT') as span:
-        if span:
+        if span != None:
             span.log_kv({'event': 'test message', 'life': 42})
 
         with tracer.start_span('CHILD', child_of=span) as child_span:
-            if child_span:
+            if child_span != None:
                 child_span.log_kv({'event': 'down below'})
 
     with tracer.start_span('ROOT2') as span:
-        if span:
+        if span != None:
             span.log_kv({'event': 'test message', 'life': 42})
     time.sleep(2)   # yield to IOLoop to flush the spans - https://github.com/jaegertracing/jaeger-client-python/issues/50
     tracer.close()  # flush any buffered spans

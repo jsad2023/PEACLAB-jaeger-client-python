@@ -32,6 +32,10 @@ class NullSpan(opentracing.Span):
         pass
     def __bool__(self):
         return False
+    def __eq__(self, other):
+        return other == None or isinstance(other, NullSpan)
+    def __ne__(self, other):
+        return not self.__eq__(self, other)
     def log_event(self):
         pass
     def log(self, **kwargs):
