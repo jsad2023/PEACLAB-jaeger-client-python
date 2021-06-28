@@ -20,6 +20,7 @@ import json
 
 import logging
 import os
+import __main__
 import random
 import sys
 import time
@@ -155,10 +156,19 @@ class Tracer(opentracing.Tracer):
 
         # In python, if the full path is not specified, the interpreter assumes
         # that the directory the script is being called from is the root directory
-        with open("data.json") as f:
-            data = json.load(f)
-        
-        if operation_name not in data or not data[operation_name]:
+
+        # IMPORTANT: Assumes that the JSON file is in the same directory as the main
+        # module of the application
+        dirName = os.path.dirname(os.path.realpath(__main__.__file__)) 
+        jsonFilePath = dirName + "/data.json"
+
+        if os.path.isfile(jsonFilePath):
+            file = open(jsonFilePath, "r")
+            data = json.load(file)
+        else:
+            data = {}
+
+        if data and operation_name not in data or not data[operation_name]:
             return Tracer.nullSpan
 
 
