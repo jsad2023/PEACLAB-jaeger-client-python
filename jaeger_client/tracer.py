@@ -153,7 +153,9 @@ class Tracer(opentracing.Tracer):
         #2. If operation name should be disbaled, mark as disable and don’t start creating span
         #3. Check for potential problems for downstream spans
 
-        with open("jaeger_client/data.json") as f:
+        # In python, if the full path is not specified, the interpreter assumes
+        # that the directory the script is being called from is the root directory
+        with open("data.json") as f:
             data = json.load(f)
         
         if operation_name not in data or not data[operation_name]:
