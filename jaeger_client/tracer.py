@@ -154,29 +154,28 @@ class Tracer(opentracing.Tracer):
         #2. If operation name should be disbaled, mark as disable and don’t start creating span
         #3. Check for potential problems for downstream spans
 
-        # In python, if the full path is not specified, the interpreter assumes
-        # that the directory the script is being called from is the root directory
-
         # IMPORTANT: Assumes that the JSON file is in the same directory as the main
-        # module of the application
+        # file of the application
         dirName = os.path.dirname(os.path.realpath(__main__.__file__)) 
         jsonFilePath = dirName + "/data.json"
 
+        # Load the JSON file if it exists
         if os.path.isfile(jsonFilePath):
             file = open(jsonFilePath, "r")
             data = json.load(file)
         else:
-            data = {}
+            data = None
 
-        if data and operation_name not in data or not data[operation_name]:
+        # if data is not None, return nullSpan if the operation name is not
+        # in the dict or the value data[operation_name] is false
+        if data and (operation_name not in data or not data[operation_name]):
             return Tracer.nullSpan
-
 
         parent = child_of
 
         if self.active_span is not None \
                 and not ignore_active_span \
-                and not parent:
+                and not parent: 
             parent = self.active_span
         
         # If the root tracepoint has been disabled, the the child
