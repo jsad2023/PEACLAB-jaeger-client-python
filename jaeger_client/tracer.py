@@ -157,19 +157,17 @@ class Tracer(opentracing.Tracer):
         # IMPORTANT: Assumes that the JSON file is in the same directory as the main
         # file of the application
         dirName = os.path.dirname(os.path.realpath(__main__.__file__)) 
-        jsonFilePath = dirName + "/data.json"
+        jsonFilePath = dirName + "/enabledTracepoints.json"
 
-        # Load the JSON file if it exists
+        # Load the JSON file if it exists.
         if os.path.isfile(jsonFilePath):
             file = open(jsonFilePath, "r")
-            data = json.load(file)
-        else:
-            data = None
-
-        # if data is not None, return nullSpan if the operation name is not
-        # in the dict or the value data[operation_name] is false
-        if data and (operation_name not in data or not data[operation_name]):
-            return Tracer.nullSpan
+            enabledTracepoints = json.load(file)
+            
+            # If the operation name in not in the list of the enabled
+            # tracepoints, disable the tracepoints
+            if operation_name not in enabledTracepoints:
+                return Tracer.nullSpan
 
         parent = child_of
 
