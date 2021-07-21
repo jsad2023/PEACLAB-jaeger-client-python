@@ -167,20 +167,19 @@ class Tracer(opentracing.Tracer):
             # If the operation name in not in the list of the enabled
             # tracepoints, disable the tracepoints
             if operation_name not in enabledTracepoints:
-                return Tracer.nullSpan
+                return NullSpan(child_of) 
 
         parent = child_of
+
+        # While parent is a nullspan 
+        while isinstance(parent, NullSpan):
+            parent = parent.child_of
 
         if self.active_span is not None \
                 and not ignore_active_span \
                 and not parent: 
             parent = self.active_span
         
-        # If the root tracepoint has been disabled, the the child
-        # spans will be disabled as well
-        if isinstance(parent, NullSpan):
-            return Tracer.nullSpan
-
         # allow Span to be passed as reference, not just SpanContext
         if isinstance(parent, Span):
             parent = parent.context

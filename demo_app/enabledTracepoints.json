@@ -1,6 +1,5 @@
 {
-	"ROOT": true,
-	"CHILD": true,
-	"ROOT2": true
+	"GRANDPARENT"    : null,
+	"GRANDCHILD"     : null
 }
 

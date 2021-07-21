@@ -26,18 +26,32 @@ from .constants import SAMPLED_FLAG, DEBUG_FLAG
 logger = logging.getLogger('jaeger_tracing')
 
 class NullSpan(opentracing.Span):
-    def __init__(self, tracer=None, context=None):
-        pass
+    def __init__(self, child_of=None):
+        self._last_enabled_parent = child_of
+
+    @property
+    def child_of(self):
+        """
+        Returns the last enabled parent span 
+        of the disabled tracepoint
+        """
+        return self._last_enabled_parent
+
     def __exit__(self, exc_type, exc_value, exc_traceback):
         pass
+
     def __bool__(self):
         return False
+
     def __eq__(self, other):
         return other == None or isinstance(other, NullSpan)
+
     def __ne__(self, other):
         return not self.__eq__(other)
+
     def log_event(self):
         pass
+
     def log(self, **kwargs):
         pass
 
